@@ -1,29 +1,36 @@
-from github_service import GitHubService
 import os
+
+from github_service import GitHubService
+from report_generator import ReportGenerator
 
 
 def main():
-    token = "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"
 
-    print("Token:", token)  # Debug line
+    token = os.getenv(
+        "GITHUB_TOKEN"
+    )
 
     owner = "Mounashree-2310"
     repo = "Python_tool"
 
-    github = GitHubService(token, owner, repo)
+    github = GitHubService(
+        token,
+        owner,
+        repo
+    )
 
-    pull_requests = github.get_pull_requests()
+    prs = github.list_pull_requests(
+        count=10,
+        state="open"
+    )
 
-    if not pull_requests:
-        print("No open pull requests found.")
-        return
+    report = ReportGenerator()
 
-    for pr in pull_requests:
-        print("-" * 50)
-        print(f"PR Number : {pr['number']}")
-        print(f"Title     : {pr['title']}")
-        print(f"Created By: {pr['user']['login']}")
-        print(f"URL       : {pr['html_url']}")
+    report.create_json(prs)
+
+    report.create_excel(prs)
+
+    print("Reports created")
 
 
 if __name__ == "__main__":
