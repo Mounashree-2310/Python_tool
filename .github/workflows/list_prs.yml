@@ -1,0 +1,39 @@
+name: List Pull Requests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  list-prs:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run PR Tool
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python main.py
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-reports
+          path: |
+            pr_report.json
+            pr_report.xlsx
