@@ -1,10 +1,13 @@
-from github import Github
+import re
+
 from github import Auth
+from github import Github
 
 
 class GitHubService:
 
     def __init__(self, token, owner, repo):
+
         auth = Auth.Token(token)
 
         self.github = Github(auth=auth)
@@ -13,7 +16,10 @@ class GitHubService:
             f"{owner}/{repo}"
         )
 
-    def get_pr_details(self, pr_number):
+    def get_pr_details(
+        self,
+        pr_number
+    ):
 
         pr = self.repo.get_pull(pr_number)
 
@@ -23,8 +29,8 @@ class GitHubService:
             "Description": pr.body,
             "Author": pr.user.login,
             "Files Changed": pr.changed_files,
-            "Additions": pr.additions,
-            "Deletions": pr.deletions,
+            "Files Added": pr.additions,
+            "Files Deleted": pr.deletions,
         }
 
     def update_pr_description(
@@ -32,10 +38,15 @@ class GitHubService:
         pr_number,
         new_description,
     ):
+
         pr = self.repo.get_pull(pr_number)
 
         pr.edit(
-            body=new_description,
+            body=new_description
+        )
+
+        print(
+            "PR Description Updated"
         )
 
     def list_pull_requests(
@@ -64,3 +75,41 @@ class GitHubService:
             )
 
         return pr_list
+
+    def get_pr_config(
+        self,
+        pr_number,
+    ):
+
+        pr = self.repo.get_pull(
+            pr_number
+        )
+
+        description = pr.body or ""
+
+        count_match = re.search(
+            r"number_of_prs=(\d+)",
+            description
+        )
+
+        repo_match = re.search(
+            r"repo_url=(.+)",
+            description
+        )
+
+        number_of_prs = (
+            int(count_match.group(1))
+            if count_match
+            else 10
+        )
+
+        repo_url = (
+            repo_match.group(1).strip()
+            if repo_match
+            else self.repo.html_url
+        )
+
+        return {
+            "number_of_prs": number_of_prs,
+            "repo_url": repo_url,
+        }
