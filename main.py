@@ -6,14 +6,10 @@ from report_generator import ReportGenerator
 
 def main():
 
-    token = os.getenv(
-        "GITHUB_TOKEN"
-    )
+    token = os.getenv("GITHUB_TOKEN")
 
     if not token:
-        print(
-            "GITHUB_TOKEN not found"
-        )
+        print("GITHUB_TOKEN not found")
         return
 
     owner = "Mounashree-2310"
@@ -22,12 +18,20 @@ def main():
     github = GitHubService(
         token,
         owner,
-        repo,
+        repo
     )
+
+    print("\nPR DETAILS:\n")
+
+    pr_details = github.get_pr_details(1)
+
+    print(pr_details)
+
+    print("\nLAST N PRs:\n")
 
     prs = github.list_pull_requests(
         count=10,
-        state="all",
+        state="all"
     )
 
     print(prs)
@@ -38,7 +42,7 @@ def main():
 
     report.create_excel(prs)
 
-    print("Reports created")
+    print("\nReports created")
 
 
 if __name__ == "__main__":
