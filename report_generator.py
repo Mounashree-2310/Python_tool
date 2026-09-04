@@ -4,33 +4,25 @@ import pandas as pd
 
 class ReportGenerator:
 
-    def create_json(
-        self,
-        data,
-        filename="pr_report.json",
-    ):
+    def create_json(self, data):
 
         with open(
-            filename,
+            "pr_report.json",
             "w",
-            encoding="utf-8",
+            encoding="utf-8"
         ) as file:
 
             json.dump(
                 data,
                 file,
-                indent=4,
+                indent=4
             )
 
-    def create_excel(
-        self,
-        data,
-        filename="pr_report.xlsx",
-    ):
+    def create_excel(self, data):
 
         df = pd.DataFrame(data)
 
         df.to_excel(
-            filename,
-            index=False,
+            "pr_report.xlsx",
+            index=False
         )

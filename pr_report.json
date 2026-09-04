@@ -1,7 +1,9 @@
-[
-    {
-        "PR Number": 1,
-        "Title": "Create list_prs.yml",
-        "Author": "Mounashree-2310"
-    }
-]
+{
+    "Number": 1,
+    "Title": "Create list_prs.yml",
+    "Description": null,
+    "Author": "Mounashree-2310",
+    "Files Changed": 9,
+    "Additions": 200,
+    "Deletions": 0
+}

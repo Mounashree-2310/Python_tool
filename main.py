@@ -8,10 +8,6 @@ def main():
 
     token = os.getenv("GITHUB_TOKEN")
 
-    if not token:
-        print("GITHUB_TOKEN not found")
-        return
-
     owner = "Mounashree-2310"
     repo = "Python_tool"
 
@@ -21,26 +17,16 @@ def main():
         repo
     )
 
-    print("\nPR DETAILS:\n")
-
     pr_details = github.get_pr_details(1)
 
+    print("\nPR DETAILS:\n")
     print(pr_details)
-
-    print("\nLAST N PRs:\n")
-
-    prs = github.list_pull_requests(
-        count=10,
-        state="all"
-    )
-
-    print(prs)
 
     report = ReportGenerator()
 
-    report.create_json(prs)
+    report.create_json(pr_details)
 
-    report.create_excel(prs)
+    report.create_excel([pr_details])
 
     print("\nReports created")
 
