@@ -10,19 +10,27 @@ def main():
         "GITHUB_TOKEN"
     )
 
+    if not token:
+        print(
+            "GITHUB_TOKEN not found"
+        )
+        return
+
     owner = "Mounashree-2310"
     repo = "Python_tool"
 
     github = GitHubService(
         token,
         owner,
-        repo
+        repo,
     )
 
     prs = github.list_pull_requests(
         count=10,
-        state="open"
+        state="all",
     )
+
+    print(prs)
 
     report = ReportGenerator()
 

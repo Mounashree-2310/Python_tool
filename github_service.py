@@ -1,10 +1,14 @@
 from github import Github
+from github import Auth
 
 
 class GitHubService:
 
     def __init__(self, token, owner, repo):
-        self.github = Github(token)
+        auth = Auth.Token(token)
+
+        self.github = Github(auth=auth)
+
         self.repo = self.github.get_repo(
             f"{owner}/{repo}"
         )
@@ -14,44 +18,49 @@ class GitHubService:
         pr = self.repo.get_pull(pr_number)
 
         return {
-            "title": pr.title,
-            "description": pr.body,
-            "author": pr.user.login,
-            "files_changed": pr.changed_files,
-            "additions": pr.additions,
-            "deletions": pr.deletions
+            "Number": pr.number,
+            "Title": pr.title,
+            "Description": pr.body,
+            "Author": pr.user.login,
+            "Files Changed": pr.changed_files,
+            "Additions": pr.additions,
+            "Deletions": pr.deletions,
         }
 
     def update_pr_description(
         self,
         pr_number,
-        description
+        new_description,
     ):
         pr = self.repo.get_pull(pr_number)
 
-        pr.edit(body=description)
+        pr.edit(
+            body=new_description,
+        )
 
     def list_pull_requests(
         self,
         count=10,
-        state="open"
+        state="open",
     ):
 
         prs = self.repo.get_pulls(
             state=state
         )
 
-        result = []
+        pr_list = []
 
         for index, pr in enumerate(prs):
 
             if index >= count:
                 break
 
-            result.append({
-                "Number": pr.number,
-                "Title": pr.title,
-                "Author": pr.user.login
-            })
+            pr_list.append(
+                {
+                    "PR Number": pr.number,
+                    "Title": pr.title,
+                    "Author": pr.user.login,
+                }
+            )
 
-        return result
+        return pr_list
