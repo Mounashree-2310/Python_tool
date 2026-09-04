@@ -1,9 +1,9 @@
 {
     "Number": 1,
     "Title": "Create list_prs.yml",
-    "Description": null,
+    "Description": "Developed a GitHub Pull Request Tool.\r\n\r\nFeatures:\r\n1. Extract PR Details\r\n2. Update PR Description\r\n3. List Last N PRs\r\n4. Generate JSON Report\r\n5. Generate Excel Report\r\n\r\nnumber_of_prs=25\r\n\r\nrepo_url=https://github.com/Mounashree-2310/Python_tool",
     "Author": "Mounashree-2310",
     "Files Changed": 9,
-    "Additions": 200,
+    "Additions": 180,
     "Deletions": 0
 }
