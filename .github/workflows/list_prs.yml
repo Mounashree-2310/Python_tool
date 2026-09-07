@@ -1,10 +1,14 @@
 name: List Pull Requests
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - edited
 
 jobs:
   list-prs:
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -28,7 +32,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python main.py
+          python main.py --pr ${{ github.event.pull_request.number }}
 
       - name: Upload Reports
         uses: actions/upload-artifact@v4
