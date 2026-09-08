@@ -5,12 +5,12 @@ on:
     types:
       - opened
       - edited
+
 env:
-FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   list-prs:
-
     runs-on: ubuntu-latest
 
     permissions:
