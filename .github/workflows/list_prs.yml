@@ -1,10 +1,14 @@
 name: List Pull Requests
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - edited
 
 jobs:
   list-prs:
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -13,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -27,11 +31,13 @@ jobs:
       - name: Run PR Tool
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           python main.py
 
       - name: Upload Reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pr-reports
           path: |
