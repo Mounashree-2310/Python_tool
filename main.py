@@ -1,3 +1,4 @@
+import argparse
 import os
 
 from github_service import GitHubService
@@ -6,73 +7,79 @@ from report_generator import ReportGenerator
 
 def main():
 
-    token = os.getenv(
-        "GITHUB_TOKEN"
+    parser = argparse.ArgumentParser(
+        description="GitHub PR Tool"
     )
 
+    parser.add_argument(
+        "--repo",
+        required=True,
+        help="Repository name in owner/repo format"
+    )
+
+    parser.add_argument(
+        "--pr",
+        type=int,
+        required=True,
+        help="Pull Request number"
+    )
+
+    args = parser.parse_args()
+
+    token = os.getenv("GITHUB_TOKEN")
+
     if not token:
-
-        print(
-            "GITHUB_TOKEN not found"
-        )
-
+        print("GITHUB_TOKEN not found")
         return
-
-    owner = "Mounashree-2310"
-    repo = "Python_tool"
 
     github = GitHubService(
         token,
-        owner,
-        repo,
+        args.repo
     )
 
-    pr_number = 1
+    print("\nPR DETAILS\n")
 
-    print("\nPR DETAILS:\n")
-
-    pr_details = (
-        github.get_pr_details(
-            pr_number
-        )
+    pr_details = github.get_pr_details(
+        args.pr
     )
 
     print(pr_details)
 
-    print(
-        "\nCONFIG FROM PR DESCRIPTION:\n"
-    )
-
     config = github.get_pr_config(
-        pr_number
+        args.pr
     )
 
+    print("\nCONFIG FROM PR DESCRIPTION\n")
     print(config)
 
-    print("\nLAST N PRs:\n")
-
-    prs = github.list_pull_requests(
-        count=config[
-            "number_of_prs"
-        ],
-        state="open",
+    repo_name = (
+        config["repo_url"]
+        .replace(
+            "https://github.com/",
+            ""
+        )
+        .strip("/")
     )
 
+    github = GitHubService(
+        token,
+        repo_name
+    )
+
+    prs = github.list_pull_requests(
+        count=config["number_of_prs"],
+        state=config["pr_state"]
+    )
+
+    print("\nLAST N PRs\n")
     print(prs)
 
     report = ReportGenerator()
 
-    report.create_json(
-        pr_details
-    )
+    report.create_json(prs)
+    report.create_excel(prs)
 
-    report.create_excel(
-        [pr_details]
-    )
-
-    print(
-        "\nReports created"
-    )
+    print("\nReports Created Successfully")
 
 
 if __name__ == "__main__":
