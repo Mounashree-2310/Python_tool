@@ -6,22 +6,19 @@ from report_generator import ReportGenerator
 
 
 def main():
-
-    parser = argparse.ArgumentParser(
-        description="GitHub PR Tool"
-    )
+    parser = argparse.ArgumentParser(description="GitHub PR Tool")
 
     parser.add_argument(
         "--repo",
         required=True,
-        help="Repository name in owner/repo format"
+        help="Repository name in owner/repo format",
     )
 
     parser.add_argument(
         "--pr",
         type=int,
         required=True,
-        help="Pull Request number"
+        help="Pull Request number",
     )
 
     args = parser.parse_args()
@@ -32,43 +29,29 @@ def main():
         print("GITHUB_TOKEN not found")
         return
 
-    github = GitHubService(
-        token,
-        args.repo
-    )
+    github = GitHubService(token, args.repo)
 
     print("\nPR DETAILS\n")
 
-    pr_details = github.get_pr_details(
-        args.pr
-    )
-
+    pr_details = github.get_pr_details(args.pr)
     print(pr_details)
 
-    config = github.get_pr_config(
-        args.pr
-    )
+    config = github.get_pr_config(args.pr)
 
     print("\nCONFIG FROM PR DESCRIPTION\n")
     print(config)
 
     repo_name = (
         config["repo_url"]
-        .replace(
-            "https://github.com/",
-            ""
-        )
+        .replace("https://github.com/", "")
         .strip("/")
     )
 
-    github = GitHubService(
-        token,
-        repo_name
-    )
+    github = GitHubService(token, repo_name)
 
     prs = github.list_pull_requests(
         count=config["number_of_prs"],
-        state=config["pr_state"]
+        state=config["pr_state"],
     )
 
     print("\nLAST N PRs\n")
