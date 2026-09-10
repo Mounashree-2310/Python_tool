@@ -1,8 +1,8 @@
 import argparse
 import os
 
-from github_service import GitHubService
-from report_generator import ReportGenerator
+from tooltask.github_service import GitHubService
+from tooltask.report_generator import ReportGenerator
 
 
 def main():
