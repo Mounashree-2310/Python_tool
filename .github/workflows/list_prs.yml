@@ -28,9 +28,19 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Create Virtual Environment
+        run: |
+          cd tooltask
+          python -m venv venv
+
       - name: Install Dependencies
         run: |
           cd tooltask
+
+          source venv/bin/activate
+
+          pip install --upgrade pip
+
           pip install -r requirements.txt
 
       - name: Run PR Tool
@@ -38,6 +48,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           cd tooltask
+
+          source venv/bin/activate
 
           python main.py \
             --repo ${{ github.repository }} \
