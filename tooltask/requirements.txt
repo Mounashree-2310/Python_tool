@@ -1,3 +1,6 @@
 PyGithub
 pandas
 openpyxl
+black
+flake8
+ruff

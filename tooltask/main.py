@@ -1,8 +1,8 @@
 import argparse
 import os
 
-from tooltask.github_service import GitHubService
-from tooltask.report_generator import ReportGenerator
+from github_service import GitHubService
+from report_generator import ReportGenerator
 
 
 def main():
@@ -14,36 +14,50 @@ def main():
     parser.add_argument(
         "--repo",
         required=True,
-        help="Repository name"
+        help="Repository name",
     )
 
     parser.add_argument(
         "--pr",
         type=int,
-        help="Pull Request number"
+        help="Pull Request number",
     )
 
     parser.add_argument(
         "--get-pr",
         action="store_true",
-        help="Get PR details"
-    )
-
-    parser.add_argument(
-        "--list-prs",
-        action="store_true",
-        help="List Pull Requests"
+        help="Get PR details",
     )
 
     parser.add_argument(
         "--update-pr",
         action="store_true",
-        help="Update PR Description"
+        help="Update PR description",
+    )
+
+    parser.add_argument(
+        "--list-prs",
+        action="store_true",
+        help="List pull requests",
     )
 
     parser.add_argument(
         "--description",
-        help="New PR Description"
+        help="New PR description",
+    )
+
+    parser.add_argument(
+        "--numbers",
+        type=int,
+        default=10,
+        help="Number of PRs",
+    )
+
+    parser.add_argument(
+        "--status",
+        choices=["open", "closed", "merged"],
+        default="open",
+        help="PR status",
     )
 
     args = parser.parse_args()
@@ -56,7 +70,7 @@ def main():
 
     github = GitHubService(
         token,
-        args.repo
+        args.repo,
     )
 
     if args.get_pr:
@@ -65,11 +79,11 @@ def main():
             print("--pr is required")
             return
 
-        pr_details = github.get_pr_details(
-            args.pr
+        print(
+            github.get_pr_details(
+                args.pr
+            )
         )
-
-        print(pr_details)
 
     elif args.update_pr:
 
@@ -83,7 +97,7 @@ def main():
 
         github.update_pr_description(
             args.pr,
-            args.description
+            args.description,
         )
 
         print(
@@ -92,37 +106,9 @@ def main():
 
     elif args.list_prs:
 
-        if not args.pr:
-            print("--pr is required")
-            return
-
-        config = github.get_pr_config(
-            args.pr
-        )
-
-        print(
-            "\nCONFIG FROM PR DESCRIPTION\n"
-        )
-
-        print(config)
-
-        repo_name = (
-            config["repo_url"]
-            .replace(
-                "https://github.com/",
-                ""
-            )
-            .strip("/")
-        )
-
-        github = GitHubService(
-            token,
-            repo_name
-        )
-
         prs = github.list_pull_requests(
-            count=config["number_of_prs"],
-            state=config["pr_state"]
+            count=args.numbers,
+            state=args.status,
         )
 
         print("\nLAST N PRs\n")
@@ -131,6 +117,7 @@ def main():
         report = ReportGenerator()
 
         report.create_json(prs)
+
         report.create_excel(prs)
 
         print(
@@ -140,8 +127,9 @@ def main():
     else:
 
         print(
-            "Please select an operation"
+            "Select one operation:"
         )
+
         print(
             "--get-pr | --update-pr | --list-prs"
         )

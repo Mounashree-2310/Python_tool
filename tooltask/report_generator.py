@@ -56,29 +56,6 @@ class ReportGenerator:
 
         worksheet = workbook.active
 
-        for column in worksheet.columns:
-
-            max_length = 0
-
-            for cell in column:
-
-                if cell.value:
-
-                    max_length = max(
-                        max_length,
-                        len(
-                            str(
-                                cell.value
-                            )
-                        ),
-                    )
-
-            worksheet.column_dimensions[
-                column[0].column_letter
-            ].width = (
-                max_length + 5
-            )
-
         workbook.save(
             file_name
         )

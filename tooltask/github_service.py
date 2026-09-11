@@ -77,9 +77,9 @@ class GitHubService:
         }
 
     def list_pull_requests(
-        self,
-        count=10,
-        state="open",
+         self,
+         count,
+         state,
     ):
         if state.lower() == "merged":
             merged_prs = [
