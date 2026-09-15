@@ -6,6 +6,9 @@ from report_generator import ReportGenerator
 
 
 def main():
+    """
+    Main entry point for GitHub PR Tool.
+    """
 
     parser = argparse.ArgumentParser(
         description="GitHub PR Tool"
@@ -68,71 +71,75 @@ def main():
         print("GITHUB_TOKEN not found")
         return
 
-    github = GitHubService(
-        token,
-        args.repo,
-    )
+    try:
 
-    if args.get_pr:
+        github = GitHubService(
+            token,
+            args.repo,
+        )
 
-        if not args.pr:
-            print("--pr is required")
-            return
+        if args.get_pr:
 
-        print(
-            github.get_pr_details(
-                args.pr
+            if not args.pr:
+                print("--pr is required")
+                return
+
+            print(
+                github.get_pr_details(
+                    args.pr
+                )
             )
-        )
 
-    elif args.update_pr:
+        elif args.update_pr:
 
-        if not args.pr:
-            print("--pr is required")
-            return
+            if not args.pr:
+                print("--pr is required")
+                return
 
-        if not args.description:
-            print("--description is required")
-            return
+            if not args.description:
+                print("--description is required")
+                return
 
-        github.update_pr_description(
-            args.pr,
-            args.description,
-        )
+            github.update_pr_description(
+                args.pr,
+                args.description,
+            )
 
-        print(
-            "PR Description Updated Successfully"
-        )
+            print(
+                "PR Description Updated Successfully"
+            )
 
-    elif args.list_prs:
+        elif args.list_prs:
 
-        prs = github.list_pull_requests(
-            count=args.numbers,
-            state=args.status,
-        )
+            prs = github.list_pull_requests(
+                count=args.numbers,
+                state=args.status,
+            )
 
-        print("\nLAST N PRs\n")
-        print(prs)
+            print("\nLAST N PRs\n")
+            print(prs)
 
-        report = ReportGenerator()
+            report = ReportGenerator()
 
-        report.create_json(prs)
+            report.create_json(prs)
+            report.create_excel(prs)
 
-        report.create_excel(prs)
+            print(
+                "\nReports Created Successfully"
+            )
 
-        print(
-            "\nReports Created Successfully"
-        )
+        else:
 
-    else:
+            print(
+                "Select one operation:"
+            )
 
-        print(
-            "Select one operation:"
-        )
+            print(
+                "--get-pr | --update-pr | --list-prs"
+            )
 
-        print(
-            "--get-pr | --update-pr | --list-prs"
-        )
+    except Exception as error:
+        print(error)
 
 
 if __name__ == "__main__":
